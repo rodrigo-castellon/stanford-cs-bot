@@ -11,11 +11,12 @@ app = Flask(__name__)
 @app.route('/', methods=['POST'])
 def webhook():
   data = request.get_json()
+  textToParse = data['text'].lower()
 
   # We don't want to reply to ourselves!
   if data['name'] != 'Test Bot':
-    if 'group chat' in data['text']:
-      msg = 'Speaking of group chats, {}, check out the group chat list!.'.format(data['name'])
+    if 'group chat'  in textToParse:
+      msg = 'Speaking of group chats, {}, check out the group chat list!'.format(data['name'])
       send_message(msg)
 
   return "ok", 200
