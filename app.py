@@ -16,7 +16,7 @@ def webhook():
   # We don't want to reply to ourselves!
   if data['name'] != 'The Bot':
     if any(x in textToParse for x in ['group chat', ' gc']):
-      msg = 'Speaking of group chats, check out the group chat list: https://bit.ly/2FuzbPs'
+      msg = 'Speaking of group chats, {}, check out the group chat list: https://bit.ly/2FuzbPs'.format(data['name'])
       send_message(msg)
 
   return "ok", 200
