@@ -37,7 +37,7 @@ eightball = [
 ]
 def eight_ball(text=None):
     global eightball
-    return random.choice([eightball])
+    return random.choice(eightball)
 
 commands = {
     'help': 'Here are some of my commands: !help, !social, !gc',
