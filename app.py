@@ -46,6 +46,7 @@ commands = {
     '8ball': eight_ball
 }
 def get_response(cmd):
+    global commands
     if type(commands[cmd]) == type(''):
         return commands[cmd]
     elif type(commands[cmd]) == type(lambda x: x):
