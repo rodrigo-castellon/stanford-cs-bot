@@ -14,6 +14,7 @@ def webhook():
     text = data['text'].lower()
 
     if data['name'] != 'Botty McBotFace':
+        print("SENDING MESSAGE!!!!")
         send_message('hello')
 
     # We don't want to reply to ourselves!
