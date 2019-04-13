@@ -8,12 +8,13 @@ from flask import Flask, request
 
 app = Flask(__name__)
 
-@app.route('/', methods=['POST'])
+@app.route('/')#, methods=['POST'])
 def webhook():
     data = request.get_json()
     #text = data['text'].lower()
     
-    send_message('hello')
+    if data['name'] != 'Botty McBotFace':
+        send_message('hello')
 
     # We don't want to reply to ourselves!
     #if data['name'] != 'Botty McBotFace':
