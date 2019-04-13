@@ -209,7 +209,7 @@ def main(group_name, csv_file, overwrite):
             raise IOError("File already exists. Try setting --overwrite.")
         if not csv_file:
             csv_file = group_name.decode('utf-8').lower().replace(' ', '_')+'.csv'
-        count, _ = countMsgs(group_name, groups[group_name]['id'], direct_msgs, csv_file=csv_file)
+        count, _ = countMsgs(group_name, groups[group_name]['id'], False, csv_file=csv_file)
         print("Processed {} messages. Wrote to {}.".format(count, csv_file))
 
 
