@@ -13,15 +13,11 @@ def webhook():
     data = request.get_json()
     text = data['text'].lower()
 
-    if data['name'] != 'Botty McBotFace':
-        print("SENDING MESSAGE!!!!")
-        send_message('hello')
-
     # We don't want to reply to ourselves!
-    #if data['name'] != 'Botty McBotFace':
-    #    if any(x in text for x in ['group chat', ' gc']):
-    #        msg = 'Speaking of group chats, check out the group chat list: https://bit.ly/2FuzbPs'
-    #        send_message(msg)
+    if data['name'] != 'Botty McBotFace':
+        if any(x in text for x in ['group chat', ' gc']):
+            msg = 'Speaking of group chats, check out the group chat list: https://bit.ly/2FuzbPs'
+            send_message(msg)
 
     return "ok", 200
 
