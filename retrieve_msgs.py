@@ -194,30 +194,14 @@ def countMsgs(group_name, group_id, direct_msgs, csv_file=None, processTextFunc=
         f.close()
     return curCount, users
 
-def main(retrieve_all, direct_msgs, group_name, csv_file, overwrite):
-    if direct_msgs:
-        groups = getDMs()
-    else:
-        groups = getGroups()
-    if groups is None:
-        raise RuntimeError("Cannot retrieve groups. Is your token correct?")
-
-    if retrieve_all:
-        for k, v in groups.iteritems():
-            new_csv_file = k.lower().replace(' ', '_')+'.csv' if not csv_file else csv_file
-            count, _ = countMsgs(k, v['id'], direct_msgs, csv_file=new_csv_file)
-            print("Processed {} messages. Wrote to {}.".format(count, csv_file))
-    elif group_name:
-        if group_name not in groups:
-            print("Group name not found. Here are the list of groups:")
-            print(getGroupNames(groups))
-        else:
-            if csv_file and os.path.isfile(csv_file) and not overwrite:
-                raise IOError("File already exists. Try setting --overwrite.")
-            if not csv_file:
-                csv_file = group_name.lower().replace(' ', '_')+'.csv'
-            count, _ = countMsgs(group_name, groups[group_name]['id'], direct_msgs, csv_file=csv_file)
-            print("Processed {} messages. Wrote to {}.".format(count, csv_file))
+def main(group_name, csv_file, overwrite):
+    if group_name:
+        if csv_file and os.path.isfile(csv_file) and not overwrite:
+            raise IOError("File already exists. Try setting --overwrite.")
+        if not csv_file:
+            csv_file = group_name.lower().replace(' ', '_')+'.csv'
+        count, _ = countMsgs(group_name, groups[group_name]['id'], direct_msgs, csv_file=csv_file)
+        print("Processed {} messages. Wrote to {}.".format(count, csv_file))
     else:
         sorted_groups = sortByCount(groups)
         print("Here is all the groups and their message counts:")

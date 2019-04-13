@@ -24,7 +24,6 @@ def webhook():
     global last_updated
     if (datetime.now() - last_updated).seconds > 3600:
         pass#last_updated = datetime.now()
-        #retrieve_msgs.main(False, False, )
 
 
     if data['name'] != BOT_NAME:
@@ -35,7 +34,7 @@ def webhook():
             args = text[1:]
 
             if command == 'update':
-                retrieve_msgs.main(False, False, GROUP_NAME, None, False)
+                retrieve_msgs.main(GROUP_NAME, None, False)
 
             if command in commands.keys():
                 send_message(get_response(command, args))
