@@ -1,3 +1,4 @@
+import random
 import os
 import json
 
@@ -12,11 +13,43 @@ from flask import Flask, request
 
 app = Flask(__name__)
 
+eightball = [
+    'It is certain.',
+    'It is decidedly so.',
+    'Without a doubt.',
+    'Yes - definitely.',
+    'You may rely on it.',
+    'As I see it, yes.',
+    'Most likely.',
+    'Outlook good.',
+    'Yes.',
+    'Signs point to yes.',
+    'Reply hazy, try again.',
+    'Ask again later.',
+    'Better not tell you now.',
+    'Cannot predict now.',
+    'Concentrate and ask again.',
+    'Don\'t count on it.',
+    'My reply is no.',
+    'My sources say no.',
+    'Outlook not so good.',
+    'Very doubtful.'
+]
+def eight_ball(text=None):
+    global eightball
+    return random.choice([eightball])
+
 commands = {
     'help': 'Here are some of my commands: !help, !social, !gc',
     'gc': 'Find other admitted Stanford group chats on this list: https://bit.ly/2FuzbPs',
-    'social': 'Find other admitted trees\' social medias on this spreadsheet: '
+    'social': 'Find other admitted trees\' social medias on this spreadsheet: https://bit.ly/2FMwDxm'
+    '8ball': eight_ball
 }
+def get_response(cmd):
+    if type(commands[cmd]) == type(''):
+        return commands[cmd]
+    elif type(commands[cmd]) == type(lambda x: x):
+        return commands[cmd]()
 
 last_updated = datetime(2019, 1, 1)
 
@@ -35,7 +68,7 @@ def webhook():
         if text[0] == '!':
             command = text[1:]
             if command in commands.keys():
-                send_message(commands[command])
+                send_message(get_response(command))
             else:
                 send_message('Sorry, I don\'t know what that command is. Try again?')
 
