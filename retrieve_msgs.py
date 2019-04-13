@@ -57,7 +57,7 @@ def getGroups():
 
     """
     params = {'per_page' : 100}
-    groups = get(requests.get(URL + '/groups' + TOKEN, params=params))
+    groups = get(requests.get(URL + '/groups?token=' + TOKEN, params=params))
     if groups is None:
         return None
     d = {}
@@ -75,7 +75,7 @@ def getGroup(group_id, direct_msgs=False):
         params = {'other_user_id' : group_id}
         group = get(requests.get(URL + '/direct_messages' + TOKEN, params=params))
     else:
-        group = get(requests.get(URL + '/groups/' + group_id + TOKEN))
+        group = get(requests.get(URL + '/groups/' + group_id + '?token=' + TOKEN))
     return group
 
 def getGroupName(group_id, direct_msgs):
@@ -126,7 +126,7 @@ def getMessages(group_id, direct_msgs, before_id=None, since_id=None):
             params['other_user_id'] = group_id
             msgs = get(requests.get(URL + '/direct_messages' + TOKEN, params=params))
         else:
-            msgs = get(requests.get(URL + '/groups/' + group_id + '/messages' + TOKEN, params=params))
+            msgs = get(requests.get(URL + '/groups/' + group_id + '/messages?token=' + TOKEN, params=params))
 
     except ValueError:
         return []
