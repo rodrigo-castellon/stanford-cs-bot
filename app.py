@@ -33,6 +33,10 @@ def webhook():
             text = text.split()
             command = text[0][1:]
             args = text[1:]
+
+            if command == 'update':
+                retrieve_msgs.main(False, False, GROUP_NAME, None, False)
+
             if command in commands.keys():
                 send_message(get_response(command, args))
             else:
