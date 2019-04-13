@@ -40,4 +40,4 @@ def get_response(cmd, args):
     if type(commands[cmd]) == type(''):
         return commands[cmd]
     elif type(commands[cmd]) == type(lambda x: x):
-        return commands[cmd](args)
+        return commands[cmd](*args)
