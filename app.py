@@ -30,16 +30,16 @@ def webhook():
     if data['name'] != BOT_NAME:
         send_message(str((datetime.now() - last_updated).seconds))
         if text[0] == '!':
-            text = text.split()
-            command = text[0][1:]
-            args = text[1:]
+            split_text = text.split()
+            command = split_text[0][1:]
+            args = split_text[1:]
 
             if command == 'update':
                 retrieve_msgs.main(GROUP_NAME, None, False)
             elif command in commands.keys():
                 send_message(get_response(command, args))
             else:
-                proc = subprocess.Popen(' '.join(text)[1:].split(), stdout=subprocess.PIPE)
+                proc = subprocess.Popen([command, *args], stdout=subprocess.PIPE)
                 output, error = proc.communicate()
                 send_message(output)
 
