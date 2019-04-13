@@ -42,7 +42,7 @@ def eight_ball(text=None):
 commands = {
     'help': 'Here are some of my commands: !help, !social, !gc',
     'gc': 'Find other admitted Stanford group chats on this list: https://bit.ly/2FuzbPs',
-    'social': 'Find other admitted trees\' social medias on this spreadsheet: https://bit.ly/2FMwDxm'
+    'social': 'Find other admitted trees\' social medias on this spreadsheet: https://bit.ly/2FMwDxm',
     '8ball': eight_ball
 }
 def get_response(cmd):
