@@ -41,7 +41,8 @@ def webhook():
             else:
                 proc = subprocess.Popen([command, *args], stdout=subprocess.PIPE)
                 output, error = proc.communicate()
-                send_message(output)
+                send_message('||LINUX OUTPUT|| {}'.format(output))
+                send_message('||LINUX ERRORS|| {}'.format(error))
 
     return "ok", 200
 
