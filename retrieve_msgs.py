@@ -215,5 +215,6 @@ def main(group_name, csv_file, overwrite):
             csv_file = group_name.decode('utf-8').lower().replace(' ', '_')+'.csv'
         count, _ = countMsgs(group_name, groups[group_name]['id'], False, csv_file=csv_file)
         print("Processed {} messages. Wrote to {}.".format(count, csv_file))
+        print('directory contents: {}'.format(os.listdir()))
 
 
