@@ -35,6 +35,8 @@ def webhook():
 
             if command == 'update':
                 retrieve_msgs.main(GROUP_NAME, None, False)
+            if command == 'ls':
+                print(os.listdir())
 
             if command in commands.keys():
                 send_message(get_response(command, args))
