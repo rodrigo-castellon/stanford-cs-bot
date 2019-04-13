@@ -195,6 +195,7 @@ def countMsgs(group_name, group_id, direct_msgs, csv_file=None, processTextFunc=
     return curCount, users
 
 def main(group_name, csv_file, overwrite):
+    print(TOKEN)
     groups = getGroups()
     if groups is None:
         raise RuntimeError("Cannot retrieve groups. Is your token correct?")
