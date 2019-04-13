@@ -195,16 +195,19 @@ def countMsgs(group_name, group_id, direct_msgs, csv_file=None, processTextFunc=
     return curCount, users
 
 def main(group_name, csv_file, overwrite):
-    if group_name:
+    groups = getGroups()
+    if groups is None:
+        raise RuntimeError("Cannot retrieve groups. Is your token correct?")
+
+    if group_name not in groups:
+        print("Group name not found. Here are the list of groups:")
+        print(getGroupNames(groups))
+    else:
         if csv_file and os.path.isfile(csv_file) and not overwrite:
             raise IOError("File already exists. Try setting --overwrite.")
         if not csv_file:
             csv_file = group_name.lower().replace(' ', '_')+'.csv'
         count, _ = countMsgs(group_name, groups[group_name]['id'], direct_msgs, csv_file=csv_file)
         print("Processed {} messages. Wrote to {}.".format(count, csv_file))
-    else:
-        sorted_groups = sortByCount(groups)
-        print("Here is all the groups and their message counts:")
-        print(sorted_groups)
 
 
