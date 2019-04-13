@@ -132,7 +132,7 @@ def getMessages(group_id, direct_msgs, before_id=None, since_id=None):
         return []
     return msgs
 
-def countMsgs(group_name, group_id, direct_msgs, csv_file=None, processTextFunc=None, sinceTs=None):
+def countMsgs(group_name, group_id, direct_msgs, csv_file=None, processTextFunc=None, sinceTs=0):
     """
     Function that calls GroupMe API and processes messages of a particular group.
 
