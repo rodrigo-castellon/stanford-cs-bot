@@ -8,11 +8,11 @@ from flask import Flask, request
 
 app = Flask(__name__)
 
-@app.route('/')#, methods=['POST'])
+@app.route('/', methods=['POST'])
 def webhook():
     data = request.get_json()
-    #text = data['text'].lower()
-    
+    text = data['text'].lower()
+
     if data['name'] != 'Botty McBotFace':
         send_message('hello')
 
