@@ -42,8 +42,6 @@ def webhook():
                 proc = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
                 output, error = proc.communicate()
                 send_message(output)
-            else:
-                send_message('Sorry, I don\'t know what that command is. Try again?')
 
     return "ok", 200
 
