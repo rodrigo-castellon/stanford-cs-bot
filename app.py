@@ -12,6 +12,7 @@ app = Flask(__name__)
 def webhook():
   data = request.get_json()
   textToParse = data['text'].lower()
+  print('TESTING TESTING')
 
   # We don't want to reply to ourselves!
   if data['name'] != 'Friendly Neighborhood Bot':
