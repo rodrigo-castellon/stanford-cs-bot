@@ -12,7 +12,7 @@ import csv
 import os
 
 URL = 'https://api.groupme.com/v3'
-TOKEN = os.getenv('GROUPME_BOT_ID')
+TOKEN = os.getenv('GROUPME_BOT_TOKEN')
 
 ########## STAT FUNCTIONS ##########
 
