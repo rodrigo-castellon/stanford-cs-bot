@@ -14,13 +14,15 @@ commands = {
     'social': 'Find other admitted trees\' social medias on this spreadsheet: '
 }
 
+BOT_NAME = 'Botty McBotFace'
+
 @app.route('/', methods=['POST'])
 def webhook():
     data = request.get_json()
     text = data['text'].lower()
 
-    # We don't want to reply to ourselves!
-    if data['name'] != 'Botty McBotFace' and text[0] == '!':
+
+    if data['name'] != BOT_NAME and text[0] == '!':
         command = text[1:]
         if command in commands.keys():
             send_message(commands[command])
