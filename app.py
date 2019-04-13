@@ -28,6 +28,7 @@ def webhook():
 
 
     if data['name'] != BOT_NAME:
+        send_message(str((datetime.now() - last_updated).seconds))
         if text[0] == '!':
             text = text.split()
             command = text[0][1:]
