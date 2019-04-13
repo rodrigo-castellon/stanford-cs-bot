@@ -9,16 +9,7 @@ import json
 import requests
 import datetime
 import csv
-import argparse
 import os
-
-parser = argparse.ArgumentParser(description='Tool to retrieve GroupMe messages and output them to a CSV file.')
-parser.add_argument('token', help='Access token used to authenticate yourself when making API requests.')
-parser.add_argument('-a', '--all', help='Retrieve all groups', action="store_true")
-parser.add_argument('-d', '--dm', help='Retrieve all direct messages', action="store_true")
-parser.add_argument('-g', '--group', help='Name of group to retrieve. Run without this flag to see list of groups.')
-parser.add_argument('-c', '--csv', help='Name of csv file to write to.', default='temp.csv')
-parser.add_argument('-o', '--overwrite', help='overwrite csv file', action="store_true")
 
 URL = 'https://api.groupme.com/v3'
 TOKEN = None
@@ -232,12 +223,4 @@ def main(retrieve_all, direct_msgs, group_name, csv_file, overwrite):
         print("Here is all the groups and their message counts:")
         print(sorted_groups)
 
-if __name__ == "__main__":
-    args = parser.parse_args()
-    token = args.token
-    if len(token) not in [32, 40]:
-        raise IOError("Invalid token. Please enter a 32-char or 40-char string.")
-    TOKEN = "?token=" + token
-
-    main(args.all, args.dm, args.group, args.csv, args.overwrite)
 
