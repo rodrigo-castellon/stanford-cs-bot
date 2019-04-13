@@ -35,9 +35,12 @@ eightball = [
     'Outlook not so good.',
     'Very doubtful.'
 ]
-def eight_ball(text=None):
+def eight_ball(args):
     global eightball
-    return random.choice(eightball)
+    if len(args) == 0:
+        return 'You need a question for me to answer!'
+    else:
+        return random.choice(eightball)
 
 commands = {
     'help': 'Here are some of my commands: !help, !social, !gc',
@@ -45,12 +48,12 @@ commands = {
     'social': 'Find other admitted trees\' social medias on this spreadsheet: https://bit.ly/2FMwDxm',
     '8ball': eight_ball
 }
-def get_response(cmd):
+def get_response(cmd, args):
     global commands
     if type(commands[cmd]) == type(''):
         return commands[cmd]
     elif type(commands[cmd]) == type(lambda x: x):
-        return commands[cmd]()
+        return commands[cmd](args)
 
 last_updated = datetime(2019, 1, 1)
 
@@ -67,9 +70,11 @@ def webhook():
 
     if data['name'] != BOT_NAME:
         if text[0] == '!':
-            command = text[1:]
+            text = text.split()
+            command = text[0][1:]
+            args = text[1:]
             if command in commands.keys():
-                send_message(get_response(command))
+                send_message(get_response(command, args))
             else:
                 send_message('Sorry, I don\'t know what that command is. Try again?')
 
