@@ -143,10 +143,10 @@ def countMsgs(group_name, group_id, direct_msgs, csv_file=None, processTextFunc=
     sinceTs: only process messages after this timestamp
     """
     if csv_file:
-        with open(csv_file, "a") as f:
-            wr = csv.writer(f, dialect="excel")
-            print('creating csv file {}'.format(csv_file))
-            print('directory contents: {}'.format(os.listdir()))
+        f = open(csv_file, "a")
+        wr = csv.writer(f, dialect="excel")
+        print('creating csv file {}'.format(csv_file))
+        print('directory contents: {}'.format(os.listdir()))
     
     if type(sinceTs) == datetime.datetime:
         sinceTs = int(sinceTs.strftime("%s"))
@@ -194,6 +194,8 @@ def countMsgs(group_name, group_id, direct_msgs, csv_file=None, processTextFunc=
                 data = processTextFunc(msg)
                 users[user].append(data)
         lastMsgId = msgs[-1]['id']
+    if csv_file:
+        f.close()
     return curCount, users
 
 def main(group_name, csv_file, overwrite):
