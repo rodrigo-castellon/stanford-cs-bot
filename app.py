@@ -2,7 +2,7 @@ import os
 import json
 
 import retrieve_msgs
-
+from config import *
 from datetime import datetime
 
 from urllib.parse import urlencode
@@ -17,10 +17,6 @@ commands = {
     'gc': 'Find other admitted Stanford group chats on this list: https://bit.ly/2FuzbPs',
     'social': 'Find other admitted trees\' social medias on this spreadsheet: '
 }
-
-BOT_NAME = 'Botty McBotFace'
-
-GROUP_NAME = 'Bot Testing'
 
 last_updated = datetime(2019, 1, 1)
 
