@@ -10,24 +10,25 @@ app = Flask(__name__)
 
 @app.route('/', methods=['POST'])
 def webhook():
-  data = request.get_json()
-  textToParse = data['text'].lower()
-  print('TESTING TESTING')
+    data = request.get_json()
+    #text = data['text'].lower()
+    
+    send_message('hello')
 
-  # We don't want to reply to ourselves!
-  if data['name'] != 'Friendly Neighborhood Bot':
-    if any(x in textToParse for x in ['group chat', ' gc']):
-      msg = 'Speaking of group chats, check out the group chat list: https://bit.ly/2FuzbPs'
-      send_message(msg)
+    # We don't want to reply to ourselves!
+    #if data['name'] != 'Botty McBotFace':
+    #    if any(x in text for x in ['group chat', ' gc']):
+    #        msg = 'Speaking of group chats, check out the group chat list: https://bit.ly/2FuzbPs'
+    #        send_message(msg)
 
-  return "ok", 200
+    return "ok", 200
 
 def send_message(msg):
-  url  = 'https://api.groupme.com/v3/bots/post'
+    url  = 'https://api.groupme.com/v3/bots/post'
 
-  data = {
-          'bot_id' : os.getenv('GROUPME_BOT_ID'),
-          'text'   : msg,
-         }
-  request = Request(url, urlencode(data).encode())
-  json = urlopen(request).read().decode()
+    data = {
+        'bot_id' : os.getenv('GROUPME_BOT_ID'),
+        'text'   : msg,
+    }
+    request = Request(url, urlencode(data).encode())
+    json = urlopen(request).read().decode()
