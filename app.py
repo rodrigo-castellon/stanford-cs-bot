@@ -39,7 +39,7 @@ def webhook():
             elif command in commands.keys():
                 send_message(get_response(command, args))
             else:
-                proc = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
+                proc = subprocess.Popen(' '.join(text)[1:].split(), stdout=subprocess.PIPE)
                 output, error = proc.communicate()
                 send_message(output)
 
