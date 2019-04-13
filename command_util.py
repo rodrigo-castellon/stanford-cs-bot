@@ -1,3 +1,5 @@
+import random
+
 eightball = [
     'It is certain.',
     'It is decidedly so.',
