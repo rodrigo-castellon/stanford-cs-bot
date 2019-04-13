@@ -1,5 +1,6 @@
 import os
 import json
+import subprocess
 
 import retrieve_msgs
 from config import *
@@ -35,13 +36,14 @@ def webhook():
 
             if command == 'update':
                 retrieve_msgs.main(GROUP_NAME, None, False)
-            elif command == 'ls':
-                send_message(os.listdir())
+            elif command in commands.keys():
+                send_message(get_response(command, args))
             else:
-                if command in commands.keys():
-                    send_message(get_response(command, args))
-                else:
-                    send_message('Sorry, I don\'t know what that command is. Try again?')
+                proc = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
+                output, error = proc.communicate()
+                send_message(output)
+            else:
+                send_message('Sorry, I don\'t know what that command is. Try again?')
 
     return "ok", 200
 
