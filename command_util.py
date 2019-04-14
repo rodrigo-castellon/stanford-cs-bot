@@ -33,7 +33,7 @@ def eight_ball(args):
         return random.choice(eightball)
 
 def stats(args):
-    fname = GROUP_NAME.decode('utf-8').lower().replace(' ', '_')+'.csv'
+    fname = GROUP_NAME.lower().replace(' ', '_')+'.csv'
     return run_stats.show_stats(fname)
 
 commands = {
