@@ -1,5 +1,5 @@
 """ 
-@author: youyanggu
+@author: youyanggu (edited by rodrigo-castellon)
 
 Tool to show simple stats of GroupMe messages. It takes the csv file generated 
 by retrieve_msgs.py as input.
@@ -7,28 +7,6 @@ by retrieve_msgs.py as input.
 """
 
 import csv
-import argparse
-
-parser = argparse.ArgumentParser(description='Tool to show simple stats of GroupMe messages.')
-parser.add_argument('csv_file', help='CSV file to read messages from. Outputted by retrieve_msgs.py.')
-# Arguments for getOccurances
-parser.add_argument('-p', '--phrase', help='Find phrase(s)', nargs='+')
-parser.add_argument('--print_matches', help='print all occurances of phrase', 
-    action="store_true", default=False)
-parser.add_argument('--count_dups', help='count multiple instances in same message', 
-    action="store_true", default=False)
-parser.add_argument('--match_exactly', help='the message must match the phrase exactly', 
-    action="store_true", default=False)
-parser.add_argument('--print_user', help='print all matches by this user')
-
-
-# Arguments for showStats
-parser.add_argument('--include_groupme', help='include messages sent by GroupMe', 
-    action="store_true", default=False)
-parser.add_argument('--average', help='take the average rather than the total', 
-    action="store_true", default=False)
-parser.add_argument('--no_compact', help='don\'t return the total num of messages and percentage', 
-    action="store_true", default=False)
 
 """
 Given a phrase, return a function that is passed to readCsv to count the number
@@ -42,8 +20,8 @@ match_exactly - the message must match the phrase exactly
 print_user - when print_matches is true, only print the matches by this user
 
 """
-def getOccurances(phrase, count_dups=False, print_matches=False, match_exactly=False, print_user=None):
-    def getNum(user, original_text):
+def get_occurrences(phrase, count_dups=False, print_matches=False, match_exactly=False, print_user=None):
+    def get_num(user, original_text):
         count = 0
         if original_text is None:
             return 0
@@ -52,12 +30,14 @@ def getOccurances(phrase, count_dups=False, print_matches=False, match_exactly=F
             if type(phrase) == list:
                 for w in phrase:
                     if match_exactly:
-                        if text == w: count = 1
+                        if text == w:
+                            count = 1
                     else:
                         count += text.count(w)
             else:
                 if match_exactly:
-                    if phrase == text: count = 1
+                    if phrase == text:
+                        count = 1
                 else:
                     count = text.count(phrase)
             if count > 0 and (print_matches or print_user == user):
@@ -66,16 +46,16 @@ def getOccurances(phrase, count_dups=False, print_matches=False, match_exactly=F
                 return min(count, 1)
             else:
                 return count
-    return getNum
+    return get_num
 
-def numWords(user, text):
+def num_words(user, text):
     return len(text.split())
 
-def numChars(user, text):
+def num_chars(user, text):
     return len(text)
 
 """ Reads the CSV file and passes the content to process_msg_func """
-def readCsv(fname, process_msg_func=None):
+def read_csv(fname, process_msg_func=None):
     f = open(fname, 'rU')
     reader = csv.reader(f)
     count = 0
@@ -83,10 +63,7 @@ def readCsv(fname, process_msg_func=None):
     for row in reader:
         if len(row) < 3:
             raise IOError("CSV file missing columns.")
-        group_name = row[0]
-        timestamp = row[1]
-        user = row[2]
-        text = row[3]
+        group_name, timestamp, user, text = row[1:4]
         if user not in d:
             d[user] = []
         if process_msg_func is None:
@@ -96,13 +73,13 @@ def readCsv(fname, process_msg_func=None):
             d[user].append(data)
     return d
 
-""" Helper function that calls readCsv and getStats """
-def showStats(fname, func=None, **kwargs):
-    result = readCsv(fname, func)
-    return getStats(result, **kwargs)
+""" Helper function that calls read_csv and get_stats """
+def show_stats(fname, func=None, **kwargs):
+    result = read_csv(fname, func)
+    return get_stats(result, **kwargs)
 
 """ 
-Given the return value of readCsv, display useful stats 
+Given the return value of read_csv, display useful stats 
 
 Params:
 data - dictionary where the key is the user's name and the value is a list that contains an
@@ -113,7 +90,7 @@ total - sum the list of integers rather than take the average. If we're counting
 percent - display the number of matches as a percentage of total messages
 compact - don't return the total num of messages and percentage
 """
-def getStats(data, include_groupme=False, total=True, percent=True, compact=True):
+def get_stats(data, include_groupme=False, total=True, percent=True, compact=True):
     l = []
     num_people = total_msgs = total_data_per_person = total_data = 0
     for k,v in data.iteritems():
@@ -151,20 +128,20 @@ if __name__ == "__main__":
     args = parser.parse_args()
     csv_file = args.csv_file
     if args.phrase:
-        result = readCsv(csv_file, getOccurances(
+        result = read_csv(csv_file, get_occurrences(
                                   args.phrase, 
                                   print_matches=args.print_matches,
                                   count_dups=args.count_dups,
                                   match_exactly=args.match_exactly,
                                   print_user=args.print_user)
                         )
-        print getStats(result,
+        print get_stats(result,
                        include_groupme=args.include_groupme,
                        total=(not args.average), 
                        compact=(not args.no_compact)
                       )
     else:
-        print showStats(csv_file,
+        print show_stats(csv_file,
                         None,
                         include_groupme=args.include_groupme,
                         total=(not args.average), 

@@ -3,6 +3,8 @@ import json
 import subprocess
 
 import retrieve_msgs
+import run_stats
+
 from config import *
 from command_util import *
 
