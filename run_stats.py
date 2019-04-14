@@ -41,7 +41,7 @@ def get_occurrences(phrase, count_dups=False, print_matches=False, match_exactly
                 else:
                     count = text.count(phrase)
             if count > 0 and (print_matches or print_user == user):
-                print user, ':', original_text
+                print(user, ':', original_text)
             if count_dups:
                 return min(count, 1)
             else:
@@ -124,7 +124,7 @@ def get_stats(data, include_groupme=False, total=True, percent=True, compact=Tru
     return l
 
 
-if __name__ == "__main__":
+"""if __name__ == "__main__":
     args = parser.parse_args()
     csv_file = args.csv_file
     if args.phrase:
@@ -147,4 +147,4 @@ if __name__ == "__main__":
                         total=(not args.average), 
                         compact=(not args.no_compact)
                         )
-    
+    """
