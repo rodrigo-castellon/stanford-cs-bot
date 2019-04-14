@@ -63,7 +63,7 @@ def read_csv(fname, process_msg_func=None):
     for row in reader:
         if len(row) < 3:
             raise IOError("CSV file missing columns.")
-        group_name, timestamp, user, text = row[1:4]
+        group_name, timestamp, user, text = row[:4]
         if user not in d:
             d[user] = []
         if process_msg_func is None:
