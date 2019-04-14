@@ -93,6 +93,7 @@ compact - don't return the total num of messages and percentage
 def get_stats(data, include_groupme=False, total=True, percent=True, compact=True):
     l = []
     num_people = total_msgs = total_data_per_person = total_data = 0
+    print(data)
     for k,v in data.iteritems():
         if not include_groupme and str(k) == 'GroupMe':
             continue
