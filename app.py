@@ -7,11 +7,14 @@ import run_stats
 
 from config import *
 from command_util import *
+from html_util import *
 
 from datetime import datetime
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 from flask import Flask, request, render_template
+
+from flask_table import Table, Col
 
 app = Flask(__name__, template_folder='templates')
 
@@ -46,7 +49,10 @@ def webhook():
                     send_message('||LINUX ERRORS|| {}'.format(error))
     else:
         # do things related to displaying the webpage with stats
-        return render_template('stats.html')
+        l, total_stats = run_stats.show_stats(run_stats.get_likes)
+        table = gen_table(l)
+
+        return render_template('stats.html', table=table)
 
     return "ok", 200
 
