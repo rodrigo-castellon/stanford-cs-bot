@@ -179,7 +179,7 @@ def countMsgs(group_name, group_id, direct_msgs, csv_file=None, processTextFunc=
                 users[user] = []
             if csv_file:
                 wr.writerow([group_name, created_at.encode('utf-8'), user.encode('utf-8'), text.encode('utf-8'), likes])
-                cur.execute("INSERT INTO msgcounts (group_name, created_at, username, msg, likes) VALUES (%s, %s, %s, %s, %s)", (group_name,
+                cur.execute("INSERT INTO msgcounts (group_name, created_at, username, msg, likes) VALUES (%s, %s, %s, %s, %s)", (group_name.decode(),
                                                                                                                                  created_at,
                                                                                                                                  user,
                                                                                                                                  text,
