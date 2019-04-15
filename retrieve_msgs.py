@@ -127,7 +127,7 @@ def countMsgs(group_name, group_id, direct_msgs, csv_file=None, processTextFunc=
     cur.execute("""CREATE TABLE msgcounts (id SERIAL PRIMARY KEY,
                                            group_name VARCHAR(100),
                                            created_at TIMESTAMP WITH TIME ZONE,
-                                           user VARCHAR(100),
+                                           username VARCHAR(100),
                                            msg TEXT,
                                            likes INTEGER)""")
 
@@ -179,11 +179,11 @@ def countMsgs(group_name, group_id, direct_msgs, csv_file=None, processTextFunc=
                 users[user] = []
             if csv_file:
                 wr.writerow([group_name, created_at.encode('utf-8'), user.encode('utf-8'), text.encode('utf-8'), likes])
-                cur.execute("INSERT INTO msgcounts (group_name, created_at, user, msg, likes) VALUES (%s, %s, %s, %s, %s)", (group_name,
-                                                                                                                             created_at.isoformat(),
-                                                                                                                             user,
-                                                                                                                             text,
-                                                                                                                             likes))
+                cur.execute("INSERT INTO msgcounts (group_name, created_at, username, msg, likes) VALUES (%s, %s, %s, %s, %s)", (group_name,
+                                                                                                                                 created_at.isoformat(),
+                                                                                                                                 user,
+                                                                                                                                 text,
+                                                                                                                                 likes))
                 print('wrote row {}'.format([group_name, created_at.encode('utf-8'), user.encode('utf-8'), text.encode('utf-8'), likes]))
             if processTextFunc is not None:
                 data = processTextFunc(msg)
