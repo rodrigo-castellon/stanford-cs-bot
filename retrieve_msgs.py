@@ -10,7 +10,9 @@ import requests
 import datetime
 import csv
 import os
+import psycopg2
 
+# GroupMe API variables
 URL = 'https://api.groupme.com/v3'
 TOKEN = os.getenv('GROUPME_BOT_TOKEN')
 
@@ -81,9 +83,9 @@ def get_last_msg_id(group_id, direct_msgs):
 
 def get_messages(group_id, direct_msgs, before_id=None, since_id=None):
     """
-    Given the group_id and the message_id, retrieves 20 messages
+    Given the group_id and the message_id, retrieve 20 messages.
 
-    Params:
+    Parameters:
     before_id: take the 20 messages before this message_id
     since_id: take the 20 messages after this message_id (maybe)
     """
@@ -105,14 +107,30 @@ def get_messages(group_id, direct_msgs, before_id=None, since_id=None):
 
 def countMsgs(group_name, group_id, direct_msgs, csv_file=None, processTextFunc=None, sinceTs=0):
     """
-    Function that calls GroupMe API and processes messages of a particular group.
+    Call GroupMe API and process messages of a particular group.
 
-    Params:
-    group_id: group_id of group
-    csv_file: name of output csv file
-    processTextFunc: a function that processes a msg and returns a value that is appended to user data
-    sinceTs: only process messages after this timestamp
+    Parameters:
+    group_name (bytes): name of group
+    group_id (string): id of group
+    csv_file (string): name of output csv file
+    processTextFunc (function): a function that processes a msg and returns a value that is appended to user data
+    sinceTs (int): only process messages after this timestamp
     """
+
+    # Postgres setup
+    DATABASE_URL = os.environ['DATABASE_URL']
+    conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+    cur = conn.cursor()
+
+    cur.execute("DROP TABLE IF EXISTS msgcounts;")
+
+    cur.execute("""CREATE TABLE msgcounts (id SERIAL PRIMARY KEY,
+                                           group_name VARCHAR(100),
+                                           created_at TIMESTAMP WITHOUT TIME ZONE,
+                                           user VARCHAR(100),
+                                           msg TEXT,
+                                           likes INTEGER)""")
+
     if csv_file:
         f = open(csv_file, "a")
         wr = csv.writer(f, dialect="excel")
@@ -161,6 +179,11 @@ def countMsgs(group_name, group_id, direct_msgs, csv_file=None, processTextFunc=
                 users[user] = []
             if csv_file:
                 wr.writerow([group_name, created_at.encode('utf-8'), user.encode('utf-8'), text.encode('utf-8'), likes])
+                cur.execute("INSERT INTO msgcounts (group_name, created_at, user, msg, likes) VALUES (%s, %s, %s, %s, %s)", (group_name,
+                                                                                                                             created_at.isoformat(),
+                                                                                                                             user,
+                                                                                                                             text,
+                                                                                                                             likes))
                 print('wrote row {}'.format([group_name, created_at.encode('utf-8'), user.encode('utf-8'), text.encode('utf-8'), likes]))
             if processTextFunc is not None:
                 data = processTextFunc(msg)
@@ -168,6 +191,11 @@ def countMsgs(group_name, group_id, direct_msgs, csv_file=None, processTextFunc=
         lastMsgId = msgs[-1]['id']
     if csv_file:
         f.close()
+    
+    # commit and close connection to database
+    conn.commit()
+    curr.close()
+    conn.close()
     return cur_count, users
 
 def main(group_name, csv_file, overwrite):
