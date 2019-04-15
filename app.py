@@ -37,7 +37,7 @@ def webhook():
             args = split_text[1:]
 
             if command == 'update':
-                retrieve_msgs.main(GROUP_NAME, None, False)
+                retrieve_msgs.main(GROUP_NAME, False)
             elif command in commands.keys():
                 send_message(get_response(command, args))
             else:

@@ -1,7 +1,7 @@
 """
 @author: youyanggu (edited by rodrigo-castellon)
 
-Tool to retrieve GroupMe messages using the GroupMe API and output them to a CSV file.
+Tool to retrieve GroupMe messages using the GroupMe API and output them to a PostgreSQL database
 
 """
 
@@ -16,14 +16,10 @@ import psycopg2
 URL = 'https://api.groupme.com/v3'
 TOKEN = os.getenv('GROUPME_BOT_TOKEN')
 
-########## STAT FUNCTIONS ##########
-
 def get_num_favorited(msg):
     """Counts the number of favorites the mssage received."""
     num_favorited = msg['favorited_by']
     return len(num_favorited)
-
-####################################
 
 
 ##########################
@@ -56,32 +52,22 @@ def get_groups():
             d[name]['count'] = count
     return d
 
-def get_group(group_id, direct_msgs=False):
-    if direct_msgs:
-        params = {'other_user_id' : group_id}
-        group = get(requests.get(URL + '/direct_messages' + TOKEN, params=params))
-    else:
-        group = get(requests.get(URL + '/groups/' + group_id + '?token=' + TOKEN))
+def get_group(group_id):
+    group = get(requests.get(URL + '/groups/' + group_id + '?token=' + TOKEN))
     return group
 
-def get_group_count(group_id, direct_msgs):
-    group = get_group(group_id, direct_msgs)
-    if direct_msgs:
-        return int(group['count'])
-    else:
-        return int(group['messages']['count'])
+def get_group_count(group_id):
+    group = get_group(group_id)
+    return int(group['messages']['count'])
 
 def get_group_names(groups):
     return groups.keys()
 
-def get_last_msg_id(group_id, direct_msgs):
-    group = get_group(group_id, direct_msgs)
-    if direct_msgs:
-        return group['direct_messages'][0]['id']
-    else:
-        return group['messages']['last_message_id']
+def get_last_msg_id(group_id):
+    group = get_group(group_id)
+    return group['messages']['last_message_id']
 
-def get_messages(group_id, direct_msgs, before_id=None, since_id=None):
+def get_messages(group_id, before_id=None, since_id=None):
     """
     Given the group_id and the message_id, retrieve 20 messages.
 
@@ -95,24 +81,19 @@ def get_messages(group_id, direct_msgs, before_id=None, since_id=None):
     if since_id is not None:
         params['since_id'] = str(since_id)
     try:
-        if direct_msgs:
-            params['other_user_id'] = group_id
-            msgs = get(requests.get(URL + '/direct_messages' + TOKEN, params=params))
-        else:
-            msgs = get(requests.get(URL + '/groups/' + group_id + '/messages?token=' + TOKEN, params=params))
+        msgs = get(requests.get(URL + '/groups/' + group_id + '/messages?token=' + TOKEN, params=params))
 
     except ValueError:
         return []
     return msgs
 
-def countMsgs(group_name, group_id, direct_msgs, csv_file=None, processTextFunc=None, sinceTs=0):
+def count_msgs(group_name, group_id, processTextFunc=None, sinceTs=0):
     """
     Call GroupMe API and process messages of a particular group.
 
     Parameters:
     group_name (bytes): name of group
     group_id (string): id of group
-    csv_file (string): name of output csv file
     processTextFunc (function): a function that processes a msg and returns a value that is appended to user data
     sinceTs (int): only process messages after this timestamp
     """
@@ -130,29 +111,21 @@ def countMsgs(group_name, group_id, direct_msgs, csv_file=None, processTextFunc=
                                            username VARCHAR(100),
                                            msg TEXT,
                                            likes INTEGER)""")
-
-    if csv_file:
-        f = open(csv_file, "a")
-        wr = csv.writer(f, dialect="excel")
-        print('creating csv file {}'.format(csv_file))
-        print('directory contents: {}'.format(os.listdir()))
     
     if type(sinceTs) == datetime.datetime:
         sinceTs = int(sinceTs.strftime("%s"))
     
-    total_count = get_group_count(group_id, direct_msgs)
+    total_count = get_group_count(group_id)
     print("Counting messages for {} (Total: {})".format(group_name, total_count))
     cur_count = 0
     users = {}
-    lastMsgId = str(int(get_last_msg_id(group_id, direct_msgs))+1) # get current msg as well
+    lastMsgId = str(int(get_last_msg_id(group_id))+1) # get current msg as well
     while (cur_count < total_count):
         if cur_count % 100 == 0:
             print(cur_count)
-        msgs = get_messages(group_id, direct_msgs, lastMsgId)
+        msgs = get_messages(group_id, False, lastMsgId)
         if not msgs:
             break
-        if direct_msgs:
-            msgs = msgs['direct_messages']
         else:
             msgs = msgs['messages']
         if not msgs:
@@ -177,20 +150,16 @@ def countMsgs(group_name, group_id, direct_msgs, csv_file=None, processTextFunc=
                 created_at = ""
             if user not in users:
                 users[user] = []
-            if csv_file:
-                wr.writerow([group_name, created_at.encode('utf-8'), user.encode('utf-8'), text.encode('utf-8'), likes])
-                cur.execute("INSERT INTO msgcounts (group_name, created_at, username, msg, likes) VALUES (%s, %s, %s, %s, %s)", (group_name.decode(),
-                                                                                                                                 created_at,
-                                                                                                                                 user,
-                                                                                                                                 text,
-                                                                                                                                 likes))
-                print('wrote row {}'.format([group_name, created_at.encode('utf-8'), user.encode('utf-8'), text.encode('utf-8'), likes]))
+            cur.execute("INSERT INTO msgcounts (group_name, created_at, username, msg, likes) VALUES (%s, %s, %s, %s, %s)", (group_name.decode(),
+                                                                                                                             created_at,
+                                                                                                                             user,
+                                                                                                                             text,
+                                                                                                                             likes))
+            print('wrote row {}'.format([group_name, created_at.encode('utf-8'), user.encode('utf-8'), text.encode('utf-8'), likes]))
             if processTextFunc is not None:
                 data = processTextFunc(msg)
                 users[user].append(data)
         lastMsgId = msgs[-1]['id']
-    if csv_file:
-        f.close()
     
     # commit and close connection to database
     conn.commit()
@@ -198,7 +167,7 @@ def countMsgs(group_name, group_id, direct_msgs, csv_file=None, processTextFunc=
     conn.close()
     return cur_count, users
 
-def main(group_name, csv_file, overwrite):
+def main(group_name, overwrite):
     if type(group_name) == type(''):
         group_name = group_name.encode('utf-8').strip()
     groups = get_groups()
@@ -209,12 +178,7 @@ def main(group_name, csv_file, overwrite):
         print("Group name not found. Here are the list of groups:")
         print(get_group_names(groups))
     else:
-        if csv_file and os.path.isfile(csv_file) and not overwrite:
-            raise IOError("File already exists. Try setting --overwrite.")
-        if not csv_file:
-            csv_file = group_name.decode('utf-8').lower().replace(' ', '_')+'.csv'
-        count, _ = countMsgs(group_name, groups[group_name]['id'], False, csv_file=csv_file)
-        print("Processed {} messages. Wrote to {}.".format(count, csv_file))
-        print('directory contents: {}'.format(os.listdir()))
+        count, _ = count_msgs(group_name, groups[group_name]['id'])
+        print("Processed {} messages. Wrote to database.".format(count))
 
 
