@@ -6,6 +6,8 @@ by retrieve_msgs.py as input.
 
 """
 
+import os
+
 """
 Given a phrase, return a function that is passed to readCsv to count the number
 of occurrences of a certain phrase.
@@ -53,7 +55,7 @@ def num_chars(user, text):
     return len(text)
 
 """ Reads the table `msgcounts` from the database and passes the content to process_msg_func """
-def read_db(fname, process_msg_func=None):
+def read_db(process_msg_func=None):
     if process_msg_func == None:
         process_msg_func = lambda x: 1
 
@@ -76,8 +78,8 @@ def read_db(fname, process_msg_func=None):
     return d
 
 """ Helper function that calls read_db and get_stats """
-def show_stats(fname, func=None, **kwargs):
-    result = read_db(fname, func)
+def show_stats(func=None, **kwargs):
+    result = read_db(func)
     return get_stats(result, **kwargs)
 
 """ 
