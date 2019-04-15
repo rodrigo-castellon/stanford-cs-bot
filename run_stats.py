@@ -64,13 +64,13 @@ def read_db(process_msg_func=None):
     conn = psycopg2.connect(DATABASE_URL, sslmode='require')
     cur = conn.cursor()
 
-    cur.execute("SELECT (group_name, created_at, username, msg, likes) FROM msgcounts;")
+    cur.execute("SELECT * FROM msgcounts;")
     table = cur.fetchall()
 
     count = 0
     d = {}
     for row in table:
-        group_name, created_at, user, msg, likes = row
+        ID, group_name, created_at, user, msg, likes = row
         if user not in d:
             d[user] = []
         
