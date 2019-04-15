@@ -124,7 +124,7 @@ def count_msgs(group_name, group_id, processTextFunc=None, sinceTs=0):
     while (cur_count < total_count):
         if cur_count % 100 == 0:
             print(cur_count)
-        msgs = get_messages(group_id, None, lastMsgId)
+        msgs = get_messages(group_id, lastMsgId, None)
         if not msgs:
             break
         else:
