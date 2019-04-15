@@ -58,7 +58,7 @@ def num_chars(user, text):
 """ Reads the table `msgcounts` from the database and passes the content to process_msg_func """
 def read_db(process_msg_func=None):
     if process_msg_func == None:
-        process_msg_func = lambda x: 1
+        process_msg_func = lambda x,y: 1
 
     DATABASE_URL = os.environ['DATABASE_URL']
     conn = psycopg2.connect(DATABASE_URL, sslmode='require')
@@ -74,7 +74,7 @@ def read_db(process_msg_func=None):
         if user not in d:
             d[user] = []
         
-        data = process_msg_func(user, text)
+        data = process_msg_func(user, msg)
         d[user].append(data)
     return d
 
