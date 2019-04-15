@@ -13,7 +13,7 @@ from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 from flask import Flask, request, render_template
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='template')
 
 last_updated = datetime(2019, 1, 1)
 
