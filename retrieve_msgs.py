@@ -162,7 +162,7 @@ def countMsgs(group_name, group_id, direct_msgs, csv_file=None, processTextFunc=
                 return cur_count, users
             cur_count += 1
             try:
-                created_at = datetime.datetime.fromtimestamp(msg['created_at']).strftime('%Y-%m-%d %H:%M:%S')
+                created_at = datetime.datetime.fromtimestamp(msg['created_at']).isoformat()
             except:
                 print("Error parsing created_at")
                 created_at = ""
@@ -180,7 +180,7 @@ def countMsgs(group_name, group_id, direct_msgs, csv_file=None, processTextFunc=
             if csv_file:
                 wr.writerow([group_name, created_at.encode('utf-8'), user.encode('utf-8'), text.encode('utf-8'), likes])
                 cur.execute("INSERT INTO msgcounts (group_name, created_at, username, msg, likes) VALUES (%s, %s, %s, %s, %s)", (group_name,
-                                                                                                                                 created_at.isoformat(),
+                                                                                                                                 created_at,
                                                                                                                                  user,
                                                                                                                                  text,
                                                                                                                                  likes))
