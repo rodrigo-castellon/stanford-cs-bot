@@ -16,6 +16,6 @@ class Item(object):
         self.likes_per = likes_per
 
 def gen_table(l):
-	items = [list(x) for x in l]
+	items = [Item(*list(x)) for x in l]
 	table = ItemTable(items)
 	return table
