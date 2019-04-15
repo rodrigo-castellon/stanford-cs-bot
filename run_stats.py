@@ -28,27 +28,27 @@ def get_occurrences(phrase, count_dups=False, print_matches=False, match_exactly
         count = 0
         if msg is None:
             return 0
-        else:
-            text = msg.lower()
-            if type(phrase) == list:
-                for w in phrase:
-                    if match_exactly:
-                        if text == w:
-                            count = 1
-                    else:
-                        count += text.count(w)
-            else:
+        
+        text = msg.lower()
+        if type(phrase) == list:
+            for w in phrase:
                 if match_exactly:
-                    if phrase == text:
+                    if text == w:
                         count = 1
                 else:
-                    count = text.count(phrase)
-            if count > 0 and (print_matches or print_user == user):
-                print(user, ':', msg)
-            if count_dups:
-                return min(count, 1)
+                    count += text.count(w)
+        else:
+            if match_exactly:
+                if phrase == text:
+                    count = 1
             else:
-                return count
+                count = text.count(phrase)
+        if count > 0 and (print_matches or print_user == user):
+            print(user, ':', msg)
+        if count_dups:
+            return min(count, 1)
+        else:
+            return count
     return get_num
 
 def get_likes(user, msg, likes):
@@ -67,7 +67,7 @@ def read_db(process_msg_func=None):
     Read the table `msgcounts` from the database and passes the content to process_msg_func.
     """
     if process_msg_func == None:
-        process_msg_func = lambda x,y: 1
+        process_msg_func = lambda x,y,z: 1
 
     DATABASE_URL = os.environ['DATABASE_URL']
     conn = psycopg2.connect(DATABASE_URL, sslmode='require')
