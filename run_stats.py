@@ -91,14 +91,14 @@ data - dictionary where the key is the user's name and the value is a list that 
         integer for each message by the user (typically representing the # of phrases matched)
 include_groupme - include messages sent by GroupMe
 total - sum the list of integers rather than take the average. If we're counting phrase 
-        occurances, then total=True. If we are counting avg message length, then total=False
+        occurrences, then total=True. If we are counting avg message length, then total=False
 percent - display the number of matches as a percentage of total messages
 compact - don't return the total num of messages and percentage
 """
 def get_stats(data, include_groupme=False, total=True, percent=True, compact=True):
     l = []
     num_people = total_msgs = total_data_per_person = total_data = 0
-    for k,v in data.iteritems():
+    for k,v in data.items():
         if not include_groupme and str(k) == 'GroupMe':
             continue
         num_people += 1
