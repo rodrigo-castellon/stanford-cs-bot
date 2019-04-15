@@ -9,6 +9,8 @@ by retrieve_msgs.py as input.
 import os
 import psycopg2
 
+### Message processor functions:
+
 def get_occurrences(phrase, count_dups=False, print_matches=False, match_exactly=False, print_user=None):
     """
     Given a phrase, return a function that is passed to read_db to count the number
@@ -19,15 +21,15 @@ def get_occurrences(phrase, count_dups=False, print_matches=False, match_exactly
     count_dups (boolean): count multiple instances of a phrase in a message as a single instance
     print_matches (boolean): print the messages that match the phrase
     match_exactly (boolean): the message must match the phrase exactly
-    print_user (boolean): when print_matches is true, only print the matches by this user
+    print_user (string): when print_matches is true, only print the matches by this user
 
     """
-    def get_num(user, original_text):
+    def get_num(user, msg, likes):
         count = 0
-        if original_text is None:
+        if msg is None:
             return 0
         else:
-            text = original_text.lower()
+            text = msg.lower()
             if type(phrase) == list:
                 for w in phrase:
                     if match_exactly:
@@ -42,18 +44,23 @@ def get_occurrences(phrase, count_dups=False, print_matches=False, match_exactly
                 else:
                     count = text.count(phrase)
             if count > 0 and (print_matches or print_user == user):
-                print(user, ':', original_text)
+                print(user, ':', msg)
             if count_dups:
                 return min(count, 1)
             else:
                 return count
     return get_num
 
-def num_words(user, text):
-    return len(text.split())
+def get_likes(user, msg, likes)
+    return likes
 
-def num_chars(user, text):
-    return len(text)
+def num_words(user, msg, likes):
+    return len(msg.split())
+
+def num_chars(user, msg, likes):
+    return len(msg)
+
+##############################
 
 def read_db(process_msg_func=None):
     """
@@ -76,7 +83,7 @@ def read_db(process_msg_func=None):
         if user not in d:
             d[user] = []
         
-        data = process_msg_func(user, msg)
+        data = process_msg_func(user, msg, likes)
         d[user].append(data)
     return d
 
