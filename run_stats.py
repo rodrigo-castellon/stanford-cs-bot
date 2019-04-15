@@ -99,7 +99,8 @@ def get_stats(data, include_groupme=False, total=True, percent=True, compact=Tru
     compact (boolean): don't return the total num of messages and percentage
 
     Returns:
-    A list `l` where each element contains statistics for each person.
+    A list `l` where each element contains statistics for each person and
+    a list `total_stats` which contains total messages and total data
     """
     l = []
     total_stats = [-1, 0, 0]
@@ -110,7 +111,7 @@ def get_stats(data, include_groupme=False, total=True, percent=True, compact=Tru
             continue
         # stats: username, # of messages, total data, data per msg
         user_stats = (user, len(ints), sum(ints), sum(ints)/len(ints))
-        total_stats[1:] = [user_stats[i] + x for i,x in enumerate(total_stats[1:])]
+        total_stats[1:] = [user_stats[i+1] + x for i,x in enumerate(total_stats[1:])]
         l.append(user_stats)
 
     l = sorted(l, key=lambda k:k[1], reverse=True)
