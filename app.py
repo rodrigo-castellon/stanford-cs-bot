@@ -28,11 +28,10 @@ def webhook():
 
         global last_updated
         if (datetime.now() - last_updated).seconds > 3600:
-            pass#last_updated = datetime.now()
+            last_updated = datetime.now()
 
 
         if data['name'] != BOT_NAME:
-            send_message(str((datetime.now() - last_updated).seconds))
             if text[0] == '!':
                 split_text = text.split()
                 command = split_text[0][1:]
@@ -42,11 +41,6 @@ def webhook():
                     retrieve_msgs.main(GROUP_NAME, False)
                 elif command in commands.keys():
                     send_message(get_response(command, args))
-                else:
-                    proc = subprocess.Popen([command, *args], stdout=subprocess.PIPE)
-                    output, error = proc.communicate()
-                    send_message('||LINUX OUTPUT|| {}'.format(output))
-                    send_message('||LINUX ERRORS|| {}'.format(error))
     else:
         # do things related to displaying the webpage with stats
         l, total_stats = run_stats.show_stats(run_stats.get_likes)
