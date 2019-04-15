@@ -19,7 +19,7 @@ last_updated = datetime(2019, 1, 1)
 
 @app.route('/', methods=['GET', 'POST'])
 def webhook():
-    if flask.request.method == 'POST':
+    if request.method == 'POST':
         data = request.get_json()
         text = data['text'].lower()
 
