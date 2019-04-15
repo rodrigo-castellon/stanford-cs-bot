@@ -6,11 +6,9 @@ by retrieve_msgs.py as input.
 
 """
 
-import csv
-
 """
 Given a phrase, return a function that is passed to readCsv to count the number
-of occurances of a certain phrase.
+of occurrences of a certain phrase.
 
 Params:
 phrase - a single string or a list of strings to match for
@@ -54,32 +52,36 @@ def num_words(user, text):
 def num_chars(user, text):
     return len(text)
 
-""" Reads the CSV file and passes the content to process_msg_func """
-def read_csv(fname, process_msg_func=None):
-    f = open(fname, 'rU')
-    reader = csv.reader(f)
+""" Reads the table `msgcounts` from the database and passes the content to process_msg_func """
+def read_db(fname, process_msg_func=None):
+    if process_msg_func == None:
+        process_msg_func = lambda x: 1
+
+    DATABASE_URL = os.environ['DATABASE_URL']
+    conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+    cur = conn.cursor()
+
+    cur.execute("SELECT (group_name, created_at, username, msg, likes) FROM msgcounts;")
+    table = cur.fetchall()
+
     count = 0
     d = {}
-    for row in reader:
-        if len(row) < 3:
-            raise IOError("CSV file missing columns.")
-        group_name, timestamp, user, text = row[:4]
+    for row in table:
+        group_name, created_at, user, msg, likes = row
         if user not in d:
             d[user] = []
-        if process_msg_func is None:
-            d[user].append(1)
-        else:
-            data = process_msg_func(user, text)
-            d[user].append(data)
+        
+        data = process_msg_func(user, text)
+        d[user].append(data)
     return d
 
-""" Helper function that calls read_csv and get_stats """
+""" Helper function that calls read_db and get_stats """
 def show_stats(fname, func=None, **kwargs):
-    result = read_csv(fname, func)
+    result = read_db(fname, func)
     return get_stats(result, **kwargs)
 
 """ 
-Given the return value of read_csv, display useful stats 
+Given the return value of read_db, display useful stats 
 
 Params:
 data - dictionary where the key is the user's name and the value is a list that contains an
@@ -122,29 +124,3 @@ def get_stats(data, include_groupme=False, total=True, percent=True, compact=Tru
     if compact:
         return [(x[0],x[2]) for x in l]
     return l
-
-
-"""if __name__ == "__main__":
-    args = parser.parse_args()
-    csv_file = args.csv_file
-    if args.phrase:
-        result = read_csv(csv_file, get_occurrences(
-                                  args.phrase, 
-                                  print_matches=args.print_matches,
-                                  count_dups=args.count_dups,
-                                  match_exactly=args.match_exactly,
-                                  print_user=args.print_user)
-                        )
-        print get_stats(result,
-                       include_groupme=args.include_groupme,
-                       total=(not args.average), 
-                       compact=(not args.no_compact)
-                      )
-    else:
-        print show_stats(csv_file,
-                        None,
-                        include_groupme=args.include_groupme,
-                        total=(not args.average), 
-                        compact=(not args.no_compact)
-                        )
-    """

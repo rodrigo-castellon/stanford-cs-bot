@@ -34,7 +34,7 @@ def get(response):
 
 def get_groups():
     """
-    Returns a dictionary with group names as keys and a dictionary of
+    Return a dictionary with group names as keys and a dictionary of
     group id and # of messages as values
 
     """
