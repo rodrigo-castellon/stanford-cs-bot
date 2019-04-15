@@ -126,7 +126,7 @@ def countMsgs(group_name, group_id, direct_msgs, csv_file=None, processTextFunc=
 
     cur.execute("""CREATE TABLE msgcounts (id SERIAL PRIMARY KEY,
                                            group_name VARCHAR(100),
-                                           created_at TIMESTAMP WITHOUT TIME ZONE,
+                                           created_at TIMESTAMP WITH TIME ZONE,
                                            user VARCHAR(100),
                                            msg TEXT,
                                            likes INTEGER)""")
