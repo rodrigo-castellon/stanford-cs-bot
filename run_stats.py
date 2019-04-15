@@ -117,7 +117,7 @@ def get_stats(data, include_groupme=False, total=True, percent=True, compact=Tru
         if not include_groupme and user == 'GroupMe':
             continue
         # stats: username, # of messages, total data, data per msg
-        user_stats = (user, len(ints), sum(ints), sum(ints)/len(ints))
+        user_stats = (user, len(ints), sum(ints), round(sum(ints)/len(ints), 4))
         total_stats[1:] = [user_stats[i+1] + x for i,x in enumerate(total_stats[1:])]
         l.append(user_stats)
 
