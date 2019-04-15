@@ -81,6 +81,7 @@ def get_messages(group_id, before_id=None, since_id=None):
     if since_id is not None:
         params['since_id'] = str(since_id)
     try:
+        print('getting response from complete URL {}'.format(URL + '/groups/' + group_id + '/messages?token=' + TOKEN))
         msgs = get(requests.get(URL + '/groups/' + group_id + '/messages?token=' + TOKEN, params=params))
 
     except ValueError:
