@@ -194,7 +194,7 @@ def countMsgs(group_name, group_id, direct_msgs, csv_file=None, processTextFunc=
     
     # commit and close connection to database
     conn.commit()
-    curr.close()
+    cur.close()
     conn.close()
     return cur_count, users
 
