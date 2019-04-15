@@ -1,6 +1,6 @@
 import random
 import run_stats
-from config import GROUP_NAME
+from config import GROUP_NAME, CALLBACK_URL
 
 eightball = [
     'It is certain.',
@@ -32,16 +32,14 @@ def eight_ball(args):
     else:
         return random.choice(eightball)
 
-def stats(args):
-    fname = GROUP_NAME.lower().replace(' ', '_')+'.csv'
-    return run_stats.show_stats(fname)
 
 commands = {
-    'help': 'Here are some of my commands: !help, !social, !gc, !8ball, and !stats',
+    'help': 'Here are some of my commands: !help, !social, !gc, !8ball, !stats, and !ping',
     'gc': 'Find other admitted Stanford group chats on this list: https://bit.ly/2FuzbPs',
     'social': 'Find other admitted trees\' social medias on this spreadsheet: https://bit.ly/2FMwDxm',
     '8ball': eight_ball,
-    'stats': stats
+    'stats': 'Find people\'s stats at {}'.format(CALLBACK_URL),
+    'ping': 'pong!'
 }
 
 def get_response(cmd, args):
