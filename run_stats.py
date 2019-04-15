@@ -7,6 +7,7 @@ by retrieve_msgs.py as input.
 """
 
 import os
+import psycopg2
 
 """
 Given a phrase, return a function that is passed to readCsv to count the number
