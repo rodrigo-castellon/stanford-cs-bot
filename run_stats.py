@@ -124,18 +124,3 @@ def get_stats(data, include_groupme=False, total=True, percent=True, compact=Tru
     l = sorted(l, key=lambda k:k[1], reverse=True)
 
     return l, total_stats
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

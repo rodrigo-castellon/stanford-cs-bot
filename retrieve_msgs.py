@@ -18,7 +18,7 @@ TOKEN = os.getenv('GROUPME_BOT_TOKEN')
 
 def get_num_favorited(msg):
     """Counts the number of favorites the mssage received."""
-    num_favorited = msg['favorited_by']
+    num_favorited = msg['favorited_by']o
     return len(num_favorited)
 
 
