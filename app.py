@@ -29,16 +29,16 @@ def webhook():
         print(data)
 
         # push message to database
-        """DATABASE_URL = os.environ['DATABASE_URL']
+        DATABASE_URL = os.environ['DATABASE_URL']
         conn = psycopg2.connect(DATABASE_URL, sslmode='require')
         cur = conn.cursor()
 
         cur.execute("INSERT INTO msgcounts (group_name, created_at, username, msg, likes) VALUES (%s, %s, %s, %s, %s)", (GROUP_NAME,
-                                                                                                                         created_at,
-                                                                                                                         user,
-                                                                                                                         text,
-                                                                                                                         likes))
-        """
+                                                                                                                         datetime.fromtimestamp(data['created_at']).isoformat(),
+                                                                                                                         data['name'],
+                                                                                                                         data['text'],
+                                                                                                                         len(data['favorited_by'])))
+        
         global last_updated
         if (datetime.now() - last_updated).seconds > 3600:
             retrieve_msgs.main(GROUP_NAME, False)
