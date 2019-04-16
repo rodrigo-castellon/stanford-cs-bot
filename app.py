@@ -16,8 +16,6 @@ from flask import Flask, request, render_template
 
 from flask_table import Table, Col
 
-import psycopg2
-
 app = Flask(__name__, template_folder='templates')
 
 last_updated = datetime(2019, 1, 1)
@@ -28,19 +26,6 @@ def webhook():
         data = request.get_json()
         text = data['text'].lower()
 
-        print(data)
-
-        # push message to database
-        DATABASE_URL = os.environ['DATABASE_URL']
-        conn = psycopg2.connect(DATABASE_URL, sslmode='require')
-        cur = conn.cursor()
-
-        cur.execute("INSERT INTO msgcounts (group_name, created_at, username, msg, likes) VALUES (%s, %s, %s, %s, %s)", (GROUP_NAME,
-                                                                                                                         datetime.fromtimestamp(data['created_at']).isoformat(),
-                                                                                                                         data['name'],
-                                                                                                                         data['text'],
-                                                                                                                         len(data['favorited_by'])))
-        
         global last_updated
         if (datetime.now() - last_updated).seconds > 3600:
             retrieve_msgs.main(GROUP_NAME, False)
