@@ -16,6 +16,8 @@ from flask import Flask, request, render_template
 
 from flask_table import Table, Col
 
+import psycopg2
+
 app = Flask(__name__, template_folder='templates')
 
 last_updated = datetime(2019, 1, 1)
