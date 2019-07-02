@@ -27,7 +27,7 @@ def webhook():
         text = data['text'].lower()
 
         global last_updated
-        if (datetime.now() - last_updated).seconds > 3600:
+        if (datetime.now() - last_updated).seconds > 30:
             retrieve_msgs.main(GROUP_NAME, False)
             last_updated = datetime.now()
 
